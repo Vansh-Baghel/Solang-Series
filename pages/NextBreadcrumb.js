@@ -13,7 +13,6 @@ const NextBreadcrumb = ({ capitalizeLinks, currentpath }) => {
   });
 
   // console.log("pathNames from bread:")
-
   return (
     <div>
       <ul id='breadcrumbs-one' className='hidden lg:flex'>

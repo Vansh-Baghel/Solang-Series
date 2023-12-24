@@ -91,11 +91,7 @@ export async function getStaticProps(context) {
   };
 }
 
-const GeneralInfo = ({
-  lession,
-  totalParts,
-  filteredParts,
-}) => {
+const GeneralInfo = ({ lession, totalParts, filteredParts }) => {
   const MDXContent = useMDXComponent(lession.body.code);
   const router = useRouter();
 
@@ -110,25 +106,32 @@ const GeneralInfo = ({
     h5: MdxH5,
     h6: MdxH6,
   };
-  
+
   useEffect(() => {
     Prism.highlightAll();
   }, [lession]);
 
   const orderedLessions = filteredParts
-    ?.sort((a, b) => a.orderNumber - b.orderNumber)
+    // ?.sort((a, b) => a.orderNumber - b.orderNumber)
     .map((item) => {
       return item;
     });
 
+  // console.log(orderedLessions);
+
   const { modulenumber, modulepart, idasfilename } = router.query;
   const currentpath = `/CourseContent/${modulenumber}/${modulepart}/${idasfilename}`;
 
-  const [prevPg, nextPg, prevPgText, nextPgText] = changePartFunction({
-    modulenumber,
-    modulepart,
-    totalParts,
-  });
+  const [prevPg, nextPg, prevPgText, nextPgText, prevLessionOrPartText, nextLessionOrPartText] =
+    changePartFunction({
+      modulenumber,
+      modulepart,
+      totalParts,
+      orderedLessions,
+      allDocuments,
+      filteredParts,
+      idasfilename,
+    });
 
   const returnModuleColor = (moduleNumber) => {
     if (moduleNumber === "module-0") {
@@ -203,34 +206,37 @@ const GeneralInfo = ({
     }
   };
 
+  // console.log(orderedLessions.length);
+
   return (
     <Layout>
       <div className='my-12'>
-      <NextSeo
-            title="Soldity On Solana"
-            titleTemplate="Soldity On Solana"
-            defaultTitle="Soldity On Solana"
-            description="Deep dive into solana development using solidity"
-            canonical="https://solidityonsolana.one/"
-            openGraph={{
-              url: "https://solidityonsolana.one/",
-              title: "Soldity For Solana",
-              description: "An Ultimate Crash Course on how to build on solana using solidity",
-              images: [
-                {
-                  url: "https://res.cloudinary.com/ddwkxn8ak/image/upload/v1699181695/solangsol/land_fjuvyw.jpg",
-                  width: 600,
-                  height: 420,
-                  alt: "Soldity For Solana",
-                },
-              ],
-            }}
-            twitter={{
-              handle: "@shivamSspirit",
-              site: "shivamSspirit",
-              cardType: "summary_large_image",
-            }}
-          />
+        <NextSeo
+          title='Soldity On Solana'
+          titleTemplate='Soldity On Solana'
+          defaultTitle='Soldity On Solana'
+          description='Deep dive into solana development using solidity'
+          canonical='https://solidityonsolana.one/'
+          openGraph={{
+            url: "https://solidityonsolana.one/",
+            title: "Soldity For Solana",
+            description:
+              "An Ultimate Crash Course on how to build on solana using solidity",
+            images: [
+              {
+                url: "https://res.cloudinary.com/ddwkxn8ak/image/upload/v1699181695/solangsol/land_fjuvyw.jpg",
+                width: 600,
+                height: 420,
+                alt: "Soldity For Solana",
+              },
+            ],
+          }}
+          twitter={{
+            handle: "@shivamSspirit",
+            site: "shivamSspirit",
+            cardType: "summary_large_image",
+          }}
+        />
 
         <div className='flex sm:flex-col justify-between'>
           <ColorModuleParts
@@ -299,7 +305,7 @@ const GeneralInfo = ({
             {prevPg && (
               <a href={prevPg} className='flex flex-col'>
                 <span>Part {prevPgText}</span>
-                <span>Previous Part</span>
+                <span>Previous {prevLessionOrPartText}</span>
               </a>
             )}
           </div>
@@ -308,7 +314,7 @@ const GeneralInfo = ({
             {nextPg && (
               <a href={nextPg} className='flex flex-col justify-end'>
                 <span>Part {nextPgText}</span>
-                <span>Next Part</span>
+                <span>Next {nextLessionOrPartText}</span>
               </a>
             )}
           </div>
